@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-      home: MyHomePage(title: 'QuickMessage'),
+      home: MyHomePage(title: 'Quick-Message.'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -37,6 +37,19 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _message_controller = TextEditingController();
   TextEditingController _phone_controller = TextEditingController();
 
+  String validate_number(String number){
+    if(number[0] != '+'){
+      String ans = '+972';
+      ans = ans + number.substring(1);
+      print(ans);
+      return ans;
+    }
+    else{
+      return number;
+    }
+
+  }
+
 
 
   @override
@@ -44,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return Scaffold(
         backgroundColor: Colors.green[200],
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(fontFamily: 'IndieFlower' , fontWeight: FontWeight.bold),),
       ),
 
       body: ListView(
@@ -82,33 +95,45 @@ class _MyHomePageState extends State<MyHomePage> {
               TextField(
                 expands: true,
                 autocorrect: false,
+                autofocus: false,
                 minLines: null,
                 maxLines: null,
                 controller: _message_controller,
 
+
                 decoration: InputDecoration(
+                    border: InputBorder.none,
                     hintText: 'Enter your message',
                     labelStyle: TextStyle(color: Colors.black),
 
-                    disabledBorder: InputBorder.none,
-                    enabledBorder: OutlineInputBorder(borderSide:BorderSide(color: Colors.transparent),)
+
+                    enabledBorder: OutlineInputBorder(borderSide:BorderSide(color: Colors.transparent) ,borderRadius: BorderRadius.circular(12))
                 ),
 
               )
 
-
+ 
 
         )
         ,
 
         SizedBox(height: 20,),
-        Center(
-          child: RaisedButton(onPressed:() {
-            FlutterOpenWhatsapp.sendSingleMessage(_phone_controller.text, _message_controller.text);
-          },
-              child: Text('Send!'),
-          ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            RaisedButton(onPressed:() {
+                FlutterOpenWhatsapp.sendSingleMessage(validate_number(_phone_controller.text), _message_controller.text);
+              },
+                  child: Text('Send!'),
+              ),
+            RaisedButton(onPressed: () {
+              FlutterOpenWhatsapp.sendSingleMessage(validate_number(_phone_controller.text), '');
+            },
+            child: Text('View Profile'),)
+          ],
         ),
+
       ],
       )
 
@@ -117,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => print(_message_controller.text),
         tooltip: 'Contact Us!',
         child: Icon(Icons.email),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
